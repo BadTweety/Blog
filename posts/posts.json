@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "Hello, world — how this blog works",
+    "date": "2026-07-11",
+    "summary": "A tour of the setup: markdown posts, images, code blocks, and search — with zero installs.",
+    "tags": ["meta", "markdown"]
+  },
+  {
+    "slug": "licensing-02-permissive-vs-copyleft",
+    "title": "Permissive vs. copyleft licenses",
+    "date": "2026-07-09",
+    "summary": "MIT, Apache, GPL, AGPL — the one distinction that explains most of it.",
+    "tags": ["licensing"],
+    "series": "Licensing"
+  },
+  {
+    "slug": "licensing-01-why-it-matters",
+    "title": "Why software licensing matters",
+    "date": "2026-07-07",
+    "summary": "Kicking off a series on software licensing: what's at stake and why you can't ignore it.",
+    "tags": ["licensing"],
+    "series": "Licensing"
+  },
+  {
+    "slug": "shell-tricks",
+    "title": "Three shell tricks I keep forgetting",
+    "date": "2026-07-04",
+    "summary": "Small terminal habits that pay off daily, written down so I stop re-googling them.",
+    "tags": ["shell", "tools"]
+  }
+]

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Notes</title>
+<meta name="description" content="A minimal markdown blog.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Markdown + syntax highlighting (CDN, nothing to install) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+<link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" disabled>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<style>
+:root{
+  --bg:#FBFBF9; --ink:#1C2024; --muted:#6E747B; --accent:#0E7C6B;
+  --line:#E8E7E1; --code-bg:#F2F1EC; --card:#FFFFFF;
+  --sans:'Archivo',system-ui,sans-serif;
+  --serif:'Source Serif 4',Georgia,serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html[data-theme="dark"]{
+  --bg:#0F1418; --ink:#E7E5DF; --muted:#98A0A8; --accent:#43C7B0;
+  --line:#242C33; --code-bg:#151C23; --card:#131A20;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--serif); font-size:1.075rem; line-height:1.72;
+  transition:background .25s ease,color .25s ease;
+}
+.wrap{max-width:44rem; margin:0 auto; padding:0 1.25rem}
+
+/* ---------- header ---------- */
+header{
+  position:sticky; top:0; z-index:10;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.bar{display:flex; align-items:center; gap:1rem; height:3.4rem}
+.site{
+  font-family:var(--sans); font-weight:700; font-size:1rem;
+  letter-spacing:-.01em; text-decoration:none; color:var(--ink);
+}
+.site b{color:var(--accent)}
+.bar nav{margin-left:auto; display:flex; align-items:center; gap:.35rem}
+.bar a.nav, .bar button{
+  font-family:var(--sans); font-size:.85rem; font-weight:600;
+  color:var(--muted); background:none; border:none; cursor:pointer;
+  padding:.4rem .55rem; border-radius:.45rem; text-decoration:none;
+}
+.bar a.nav:hover, .bar button:hover{color:var(--ink); background:var(--code-bg)}
+kbd.hint{
+  font-family:var(--mono); font-size:.7rem; color:var(--muted);
+  border:1px solid var(--line); border-radius:.3rem; padding:.05rem .35rem;
+  margin-left:.3rem;
+}
+
+/* ---------- home ---------- */
+.intro{margin:3.2rem 0 2.4rem}
+.intro h1{
+  font-family:var(--sans); font-weight:700; letter-spacing:-.03em;
+  font-size:clamp(1.9rem,5vw,2.6rem); line-height:1.1; margin:0 0 .6rem;
+}
+.intro p{color:var(--muted); margin:0; font-size:1rem}
+
+.post-item{
+  display:block; text-decoration:none; color:inherit;
+  padding:1.15rem 0; border-top:1px solid var(--line);
+}
+.post-item:last-of-type{border-bottom:1px solid var(--line)}
+.post-item .meta{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted);
+}
+.post-item h2{
+  font-family:var(--sans); font-weight:600; letter-spacing:-.015em;
+  font-size:1.22rem; margin:.25rem 0 .3rem; transition:color .15s;
+}
+.post-item:hover h2{color:var(--accent)}
+.post-item p{margin:0; color:var(--muted); font-size:.95rem; line-height:1.55}
+.tags{margin-top:.45rem; display:flex; gap:.4rem; flex-wrap:wrap}
+.tag{
+  font-family:var(--sans); font-size:.72rem; font-weight:600;
+  color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent);
+  padding:.12rem .5rem; border-radius:99px;
+}
+
+/* ---------- series ---------- */
+.series-head{
+  font-family:var(--sans); font-size:.78rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  margin:2.4rem 0 .7rem;
+}
+.series-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(13rem,1fr)); gap:.7rem; margin-bottom:2.2rem}
+.series-card{
+  display:block; text-decoration:none; color:inherit;
+  border:1px solid var(--line); border-radius:.7rem; padding:.85rem 1rem;
+  background:var(--card); transition:border-color .15s;
+}
+.series-card:hover{border-color:var(--accent)}
+.series-card .s-name{font-family:var(--sans); font-weight:600; font-size:1rem}
+.series-card .s-count{font-family:var(--mono); font-size:.72rem; color:var(--muted); margin-top:.15rem}
+.series-box{
+  border:1px solid var(--line); border-left:3px solid var(--accent);
+  border-radius:.6rem; background:var(--card);
+  padding:.7rem 1rem; margin:0 0 1.6rem;
+  font-family:var(--sans); font-size:.85rem;
+}
+.series-box a{color:var(--accent); text-decoration:none; font-weight:600}
+.series-nav{display:flex; justify-content:space-between; gap:1rem; margin-top:.45rem; font-size:.82rem}
+.series-nav a{font-weight:500}
+.series-nav .spacer{flex:1}
+
+/* ---------- article ---------- */
+article{margin:3rem 0 4rem}
+article .meta{
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:.5rem;
+}
+article h1.title{
+  font-family:var(--sans); font-weight:700; letter-spacing:-.03em;
+  font-size:clamp(1.8rem,5vw,2.4rem); line-height:1.12; margin:.2rem 0 1.6rem;
+}
+.md h1,.md h2,.md h3,.md h4{
+  font-family:var(--sans); font-weight:600; letter-spacing:-.015em;
+  margin:2.2rem 0 .7rem; line-height:1.25;
+}
+.md h2{font-size:1.45rem; padding-bottom:.3rem; border-bottom:1px solid var(--line)}
+.md h3{font-size:1.15rem}
+.md p{margin:0 0 1.1rem}
+.md a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb, var(--accent) 40%, transparent)}
+.md a:hover{border-bottom-color:var(--accent)}
+.md img{max-width:100%; border-radius:.6rem; display:block; margin:1.4rem auto}
+.md blockquote{
+  margin:1.4rem 0; padding:.2rem 1.1rem; color:var(--muted);
+  border-left:3px solid var(--accent); font-style:italic;
+}
+.md ul,.md ol{padding-left:1.4rem}
+.md li{margin-bottom:.35rem}
+.md hr{border:none; border-top:1px solid var(--line); margin:2rem 0}
+.md table{border-collapse:collapse; width:100%; margin:1.4rem 0; font-size:.95rem}
+.md th,.md td{border:1px solid var(--line); padding:.5rem .7rem; text-align:left}
+.md th{font-family:var(--sans); font-size:.85rem}
+.md code{
+  font-family:var(--mono); font-size:.86em;
+  background:var(--code-bg); padding:.13em .38em; border-radius:.35rem;
+}
+.md pre{
+  position:relative; background:var(--code-bg); border:1px solid var(--line);
+  border-radius:.7rem; padding:1rem 1.1rem; overflow-x:auto;
+  margin:1.4rem 0; line-height:1.55;
+}
+.md pre code{background:none; padding:0; font-size:.85rem}
+.copy-btn{
+  position:absolute; top:.5rem; right:.5rem;
+  font-family:var(--sans); font-size:.7rem; font-weight:600;
+  color:var(--muted); background:var(--bg); border:1px solid var(--line);
+  border-radius:.4rem; padding:.22rem .55rem; cursor:pointer; opacity:0;
+  transition:opacity .15s;
+}
+.md pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{color:var(--accent)}
+.back{
+  display:inline-block; font-family:var(--sans); font-size:.85rem; font-weight:600;
+  color:var(--muted); text-decoration:none; margin-top:2.5rem;
+}
+.back:hover{color:var(--accent)}
+
+/* ---------- search overlay ---------- */
+.overlay{
+  position:fixed; inset:0; background:color-mix(in srgb, var(--ink) 25%, transparent);
+  display:none; z-index:50; padding:10vh 1rem 0;
+}
+.overlay.open{display:block}
+.palette{
+  max-width:34rem; margin:0 auto; background:var(--card);
+  border:1px solid var(--line); border-radius:.9rem; overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.18);
+}
+.palette input{
+  width:100%; border:none; outline:none; background:transparent; color:var(--ink);
+  font-family:var(--sans); font-size:1.05rem; padding:1rem 1.2rem;
+  border-bottom:1px solid var(--line);
+}
+.results{max-height:50vh; overflow-y:auto}
+.result{display:block; padding:.75rem 1.2rem; text-decoration:none; color:inherit}
+.result:hover,.result.active{background:var(--code-bg)}
+.result .r-title{font-family:var(--sans); font-weight:600; font-size:.95rem}
+.result .r-snip{font-size:.83rem; color:var(--muted); line-height:1.45}
+.result mark{background:none; color:var(--accent); font-weight:600}
+.empty{padding:1.2rem; color:var(--muted); font-family:var(--sans); font-size:.9rem}
+
+footer{
+  border-top:1px solid var(--line); margin-top:2rem;
+  padding:1.5rem 0 2.5rem; color:var(--muted);
+  font-family:var(--sans); font-size:.8rem;
+}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <!-- LOGO: edit the text below, or swap it for an image, e.g.:
+         <a class="site" href="#/"><img src="images/logo.svg" alt="Field Notes" style="height:1.5rem; display:block"></a> -->
+    <a class="site" href="#/">Hello<b>World</b></a>
+    <nav>
+      <a class="nav" href="#/">Posts</a>
+      <a class="nav" href="#/about">About</a>
+      <button id="searchBtn" title="Search">Search<kbd class="hint">/</kbd></button>
+      <button id="themeBtn" title="Toggle theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer class="wrap">Written in plain markdown · no build step, no installs.</footer>
+
+<!-- search overlay -->
+<div class="overlay" id="overlay">
+  <div class="palette">
+    <input id="searchInput" type="text" placeholder="Search posts… (Esc to close)" autocomplete="off">
+    <div class="results" id="results"></div>
+  </div>
+</div>
+
+<script>
+/* ========== config ========== */
+const SITE = {
+  title: "Field Notes",
+  tagline: "Short essays on code, tools, and whatever survives the drafts folder."
+};
+
+/* ========== state ========== */
+let POSTS = [];                 // manifest from posts/posts.json
+const CACHE = {};               // slug -> raw markdown (for search & rendering)
+
+marked.setOptions({ breaks: false, gfm: true });
+
+/* ========== theme ========== */
+const getTheme = () => { try { return localStorage.getItem("theme") } catch(e){ return null } };
+const setThemeAttr = t => {
+  document.documentElement.dataset.theme = t;
+  document.getElementById("hljs-light").disabled = (t === "dark");
+  document.getElementById("hljs-dark").disabled  = (t !== "dark");
+};
+let theme = getTheme() || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+setThemeAttr(theme);
+document.getElementById("themeBtn").onclick = () => {
+  theme = theme === "dark" ? "light" : "dark";
+  setThemeAttr(theme);
+  try { localStorage.setItem("theme", theme) } catch(e){}
+};
+
+/* ========== data ========== */
+async function loadManifest(){
+  try{
+    const r = await fetch("posts/posts.json", {cache:"no-store"});
+    POSTS = (await r.json()).sort((a,b)=> b.date.localeCompare(a.date));
+  }catch(e){
+    document.getElementById("app").innerHTML =
+      `<div class="intro"><h1>Almost there</h1>
+       <p>Couldn't load <code>posts/posts.json</code>. Browsers block local file access, so serve the folder:
+       run <code>python3 -m http.server</code> here and open <code>http://localhost:8000</code>,
+       or push it to GitHub Pages / Netlify.</p></div>`;
+    throw e;
+  }
+}
+async function loadPost(slug){
+  if (CACHE[slug]) return CACHE[slug];
+  const r = await fetch(`posts/${slug}.md`, {cache:"no-store"});
+  if (!r.ok) throw new Error("not found");
+  return CACHE[slug] = await r.text();
+}
+
+/* ========== views ========== */
+const fmtDate = d => new Date(d + "T00:00:00").toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+const app = document.getElementById("app");
+
+/* series helpers: a post opts in with "series": "Name" in posts.json */
+const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function seriesMap(){
+  const m = {};
+  POSTS.filter(p => p.series).forEach(p => {
+    const key = slugify(p.series);
+    (m[key] ??= { name: p.series, posts: [] }).posts.push(p);
+  });
+  // order each series oldest → newest (part 1 first)
+  Object.values(m).forEach(s => s.posts.sort((a,b)=> a.date.localeCompare(b.date)));
+  return m;
+}
+
+function renderHome(){
+  document.title = SITE.title;
+  const series = seriesMap();
+  const seriesKeys = Object.keys(series).sort();
+  app.innerHTML = `
+    <div class="intro"><h1>${SITE.title}</h1><p>${SITE.tagline}</p></div>
+    ${seriesKeys.length ? `
+      <div class="series-head">Series</div>
+      <div class="series-grid">
+        ${seriesKeys.map(k => `
+          <a class="series-card" href="#/series/${k}">
+            <div class="s-name">${series[k].name}</div>
+            <div class="s-count">${series[k].posts.length} post${series[k].posts.length>1?"s":""}</div>
+          </a>`).join("")}
+      </div>` : ""}
+    ${POSTS.map(p => `
+      <a class="post-item" href="#/post/${p.slug}">
+        <div class="meta">${fmtDate(p.date)}${p.series ? ` · ${p.series} series` : ""}</div>
+        <h2>${p.title}</h2>
+        <p>${p.summary || ""}</p>
+        ${p.tags?.length ? `<div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>` : ""}
+      </a>`).join("")}`;
+  window.scrollTo(0,0);
+}
+
+function renderSeries(key){
+  const s = seriesMap()[key];
+  if (!s){ app.innerHTML = `<article><h1 class="title">Series not found</h1><a class="back" href="#/">← All posts</a></article>`; return; }
+  document.title = `${s.name} — ${SITE.title}`;
+  app.innerHTML = `
+    <div class="intro">
+      <div class="series-head" style="margin-top:0">Series</div>
+      <h1>${s.name}</h1>
+      <p>${s.posts.length} post${s.posts.length>1?"s":""}, in reading order.</p>
+    </div>
+    ${s.posts.map((p,i) => `
+      <a class="post-item" href="#/post/${p.slug}">
+        <div class="meta">Part ${i+1} · ${fmtDate(p.date)}</div>
+        <h2>${p.title}</h2>
+        <p>${p.summary || ""}</p>
+      </a>`).join("")}
+    <a class="back" href="#/">← All posts</a>`;
+  window.scrollTo(0,0);
+}
+
+async function renderPost(slug){
+  const meta = POSTS.find(p => p.slug === slug);
+  if (!meta){ app.innerHTML = `<article><h1 class="title">Post not found</h1><a class="back" href="#/">← All posts</a></article>`; return; }
+  document.title = `${meta.title} — ${SITE.title}`;
+  app.innerHTML = `<article><div class="meta">Loading…</div></article>`;
+  const md = await loadPost(slug);
+  let seriesBox = "";
+  if (meta.series){
+    const key = slugify(meta.series);
+    const s = seriesMap()[key];
+    const i = s.posts.findIndex(p => p.slug === slug);
+    const prev = s.posts[i-1], next = s.posts[i+1];
+    seriesBox = `
+      <div class="series-box">
+        Part ${i+1} of ${s.posts.length} in the <a href="#/series/${key}">${meta.series}</a> series
+        <div class="series-nav">
+          ${prev ? `<a href="#/post/${prev.slug}">← ${prev.title}</a>` : "<span></span>"}
+          <span class="spacer"></span>
+          ${next ? `<a href="#/post/${next.slug}">${next.title} →</a>` : ""}
+        </div>
+      </div>`;
+  }
+  app.innerHTML = `
+    <article>
+      <div class="meta">${fmtDate(meta.date)}${meta.tags?.length ? " · " + meta.tags.join(", ") : ""}</div>
+      <h1 class="title">${meta.title}</h1>
+      ${seriesBox}
+      <div class="md">${marked.parse(md)}</div>
+      <a class="back" href="#/">← All posts</a>
+    </article>`;
+  app.querySelectorAll("pre code").forEach(el => hljs.highlightElement(el));
+  app.querySelectorAll("pre").forEach(pre => {
+    const b = document.createElement("button");
+    b.className = "copy-btn"; b.textContent = "Copy";
+    b.onclick = async () => {
+      await navigator.clipboard.writeText(pre.querySelector("code").innerText);
+      b.textContent = "Copied ✓"; setTimeout(()=> b.textContent = "Copy", 1500);
+    };
+    pre.appendChild(b);
+  });
+  window.scrollTo(0,0);
+}
+
+async function renderAbout(){
+  document.title = `About — ${SITE.title}`;
+  app.innerHTML = `<article><div class="meta">Loading…</div></article>`;
+  try{
+    const md = await fetch("about.md", {cache:"no-store"}).then(r => { if(!r.ok) throw 0; return r.text(); });
+    app.innerHTML = `<article><h1 class="title">About</h1><div class="md">${marked.parse(md)}</div></article>`;
+    app.querySelectorAll("pre code").forEach(el => hljs.highlightElement(el));
+  }catch(e){
+    app.innerHTML = `<article><h1 class="title">About</h1><p>Create an <code>about.md</code> file next to <code>index.html</code> and write about yourself in markdown.</p></article>`;
+  }
+  window.scrollTo(0,0);
+}
+
+/* ========== router ========== */
+function route(){
+  const h = location.hash || "#/";
+  const m = h.match(/^#\/post\/(.+)$/);
+  const s = h.match(/^#\/series\/(.+)$/);
+  if (m) renderPost(decodeURIComponent(m[1]));
+  else if (s) renderSeries(decodeURIComponent(s[1]));
+  else if (h === "#/about") renderAbout();
+  else renderHome();
+}
+window.addEventListener("hashchange", route);
+
+/* ========== search ========== */
+const overlay = document.getElementById("overlay");
+const input   = document.getElementById("searchInput");
+const results = document.getElementById("results");
+let indexed = false, activeIdx = -1;
+
+async function buildIndex(){
+  if (indexed) return;
+  await Promise.all(POSTS.map(p => loadPost(p.slug).catch(()=> "")));
+  indexed = true;
+}
+function openSearch(){ overlay.classList.add("open"); input.value = ""; results.innerHTML = ""; input.focus(); buildIndex(); }
+function closeSearch(){ overlay.classList.remove("open"); activeIdx = -1; }
+
+function snippet(text, q){
+  const plain = text.replace(/[#>*`\[\]()!_-]/g," ").replace(/\s+/g," ");
+  const i = plain.toLowerCase().indexOf(q);
+  if (i < 0) return plain.slice(0,110) + "…";
+  const start = Math.max(0, i - 40);
+  const raw = plain.slice(start, i + q.length + 60);
+  return (start ? "…" : "") + raw.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")})`,"ig"), "<mark>$1</mark>") + "…";
+}
+function runSearch(){
+  const q = input.value.trim().toLowerCase();
+  activeIdx = -1;
+  if (!q){ results.innerHTML = ""; return; }
+  const hits = POSTS.filter(p => {
+    const hay = (p.title + " " + (p.summary||"") + " " + (p.series||"") + " " + (p.tags||[]).join(" ") + " " + (CACHE[p.slug]||"")).toLowerCase();
+    return hay.includes(q);
+  });
+  results.innerHTML = hits.length
+    ? hits.map(p => `<a class="result" href="#/post/${p.slug}">
+        <div class="r-title">${p.title}</div>
+        <div class="r-snip">${snippet(CACHE[p.slug] || p.summary || "", q)}</div>
+      </a>`).join("")
+    : `<div class="empty">No posts match “${input.value.trim()}”.</div>`;
+}
+input.addEventListener("input", runSearch);
+results.addEventListener("click", closeSearch);
+document.getElementById("searchBtn").onclick = openSearch;
+overlay.addEventListener("click", e => { if (e.target === overlay) closeSearch(); });
+
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && !overlay.classList.contains("open") && document.activeElement.tagName !== "INPUT"){
+    e.preventDefault(); openSearch();
+  }
+  if (e.key === "Escape") closeSearch();
+  if (overlay.classList.contains("open")){
+    const items = [...results.querySelectorAll(".result")];
+    if (e.key === "ArrowDown"){ e.preventDefault(); activeIdx = Math.min(activeIdx+1, items.length-1); }
+    if (e.key === "ArrowUp"){ e.preventDefault(); activeIdx = Math.max(activeIdx-1, 0); }
+    if (e.key === "Enter" && items[activeIdx]){ items[activeIdx].click(); }
+    items.forEach((el,i)=> el.classList.toggle("active", i === activeIdx));
+    if (items[activeIdx]) items[activeIdx].scrollIntoView({block:"nearest"});
+  }
+});
+
+/* ========== boot ========== */
+loadManifest().then(route);
+</script>
+</body>
+</html>
